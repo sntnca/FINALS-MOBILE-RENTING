@@ -2,90 +2,114 @@
 #include <fstream>
 #include <queue>
 #include <string>
-#include "Rental.h"
+#include <cctype>
 using namespace std;
 
-queue<Rental> rentals;
+class Rental {
+public:
+    string renterName;
+    string phoneModel;
+    string phoneVariant;
+    string startDate;
+    string endDate;
+    double totalAmount;
 
-void Rental::input() {
-    cout << "\nEnter Renter Name: ";
-    getline(cin, renterName);
-    while (renterName.empty() || !isAlphabetic(renterName)) {
-        cout << "Invalid input. Name must contain only letters. Enter Renter Name: ";
+    bool isAlphabetic(const string& str) {
+        for (char c : str) {
+            if (!isalpha(c) && c != ' ') return false;
+        }
+        return true;
+    }
+
+    bool isNumeric(const string& str) {
+        for (char c : str) {
+            if (!isdigit(c) && c != '.') return false;
+        }
+        return true;
+    }
+
+    void input() {
+        cout << "\nEnter Renter Name: ";
         getline(cin, renterName);
-    }
+        while (renterName.empty() || !isAlphabetic(renterName)) {
+            cout << "Invalid input. Name must contain only letters. Enter Renter Name: ";
+            getline(cin, renterName);
+        }
 
-    cout << "Enter Phone Model: ";
-    getline(cin, phoneModel);
-    while (phoneModel.empty() || !isAlphabetic(phoneModel)) {
-        cout << "Phone Model must contain only letters. Enter Phone Model: ";
+        cout << "Enter Phone Model: ";
         getline(cin, phoneModel);
-    }
+        while (phoneModel.empty()) {
+            cout << "Phone Model cannot be empty. Enter Phone Model: ";
+            getline(cin, phoneModel);
+        }
 
-    cout << "Enter Phone Variant: ";
-    getline(cin, phoneVariant);
-    while (phoneVariant.empty() || !isAlphabetic(phoneVariant)) {
-        cout << "Phone Variant must contain only letters. Enter Phone Variant: ";
+        cout << "Enter Phone Variant: ";
         getline(cin, phoneVariant);
-    }
+        while (phoneVariant.empty()) {
+            cout << "Phone Variant cannot be empty. Enter Phone Variant: ";
+            getline(cin, phoneVariant);
+        }
 
-    cout << "Enter Start Date (YYYY-MM-DD): ";
-    getline(cin, startDate);
-    while (startDate.empty()) {
-        cout << "Start Date cannot be empty. Enter Start Date: ";
+        cout << "Enter Start Date (YYYY-MM-DD): ";
         getline(cin, startDate);
-    }
+        while (startDate.empty()) {
+            cout << "Start Date cannot be empty. Enter Start Date: ";
+            getline(cin, startDate);
+        }
 
-    cout << "Enter End Date (YYYY-MM-DD): ";
-    getline(cin, endDate);
-    while (endDate.empty()) {
-        cout << "End Date cannot be empty. Enter End Date: ";
+        cout << "Enter End Date (YYYY-MM-DD): ";
         getline(cin, endDate);
-    }
+        while (endDate.empty()) {
+            cout << "End Date cannot be empty. Enter End Date: ";
+            getline(cin, endDate);
+        }
 
-    string amountInput;
-    while (true) {
-        cout << "Enter Total Amount: ";
-        getline(cin, amountInput);
-        if (isNumeric(amountInput)) {
-            totalAmount = atof(amountInput.c_str());
-            break;
-        } else {
-            cout << "Invalid amount. Please enter a valid number.\n";
+        string amountInput;
+        while (true) {
+            cout << "Enter Total Amount: ";
+            getline(cin, amountInput);
+            if (isNumeric(amountInput) && !amountInput.empty()) {
+                totalAmount = atof(amountInput.c_str());
+                break;
+            } else {
+                cout << "Invalid amount. Please enter a valid number.\n";
+            }
         }
     }
-}
 
-void Rental::display() const {
-    cout << "\n--------------------------\n";
-    cout << "Renter Name   : " << renterName << endl;
-    cout << "Phone Model   : " << phoneModel << endl;
-    cout << "Phone Variant : " << phoneVariant << endl;
-    cout << "Start Date    : " << startDate << endl;
-    cout << "End Date      : " << endDate << endl;
-    cout << "Total Amount  : PHP " << totalAmount << endl;
-}
+    void display() const {
+        cout << "\n--------------------------\n";
+        cout << "Renter Name   : " << renterName << endl;
+        cout << "Phone Model   : " << phoneModel << endl;
+        cout << "Phone Variant : " << phoneVariant << endl;
+        cout << "Start Date    : " << startDate << endl;
+        cout << "End Date      : " << endDate << endl;
+        cout << "Total Amount  : PHP " << totalAmount << endl;
+    }
 
-void Rental::writeToFile(ofstream &out) const {
-    out << renterName << endl;
-    out << phoneModel << endl;
-    out << phoneVariant << endl;
-    out << startDate << endl;
-    out << endDate << endl;
-    out << totalAmount << endl;
-}
+    void writeToFile(ofstream &out) const {
+        out << renterName << endl;
+        out << phoneModel << endl;
+        out << phoneVariant << endl;
+        out << startDate << endl;
+        out << endDate << endl;
+        out << totalAmount << endl;
+    }
 
-bool Rental::readFromFile(ifstream &in) {
-    if (!getline(in, renterName)) return false;
-    if (!getline(in, phoneModel)) return false;
-    if (!getline(in, phoneVariant)) return false;
-    if (!getline(in, startDate)) return false;
-    if (!getline(in, endDate)) return false;
-    string amountStr;
-    if (!getline(in, amountStr)) return false;
-    totalAmount = atof(amountStr.c_str());
-    return true;
-}
+    bool readFromFile(ifstream &in) {
+        if (!getline(in, renterName)) return false;
+        if (!getline(in, phoneModel)) return false;
+        if (!getline(in, phoneVariant)) return false;
+        if (!getline(in, startDate)) return false;
+        if (!getline(in, endDate)) return false;
+        string amountStr;
+        if (!getline(in, amountStr)) return false;
+        totalAmount = atof(amountStr.c_str());
+        return true;
+    }
+};
+
+queue<Rental> rentals;
 
 void saveToFile() {
     ofstream out("rentals.txt");
