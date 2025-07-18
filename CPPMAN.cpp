@@ -174,6 +174,28 @@ void deleteRental() {
         cout << "Rental not found.\n";
 }
 
+void searchRental() {
+    string name;
+    cout << "\nEnter Renter Name to search: ";
+    getline(cin, name);
+    bool found = false;
+
+    queue<Rental> temp = rentals;
+    while (!temp.empty()) {
+        if (temp.front().renterName == name) {
+            cout << "\nRental found:";
+            temp.front().display();
+            found = true;
+            break;
+        }
+        temp.pop();
+    }
+
+    if (!found) {
+        cout << "Rental not found.\n";
+    }
+}
+
 void bubbleSortAndDisplay() {
     int size = rentals.size();
     if (size <= 1) {
@@ -191,9 +213,9 @@ void bubbleSortAndDisplay() {
     for (int i = 0; i < size - 1; ++i) {
         for (int j = 0; j < size - i - 1; ++j) {
             if (arr[j].renterName > arr[j + 1].renterName) {
-                Rental temp = arr[j];
+                Rental tmp = arr[j];
                 arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
+                arr[j + 1] = tmp;
             }
         }
     }
@@ -229,8 +251,9 @@ void showMenu() {
         cout << "1. Add Rental\n";
         cout << "2. Display All Rentals\n";
         cout << "3. Display Sorted Rentals (By Renter Name)\n";
-        cout << "4. Delete Rental\n";
-        cout << "5. Exit\n";
+        cout << "4. Search Rental\n";
+        cout << "5. Delete Rental\n";
+        cout << "6. Exit\n";
         cout << "Enter choice: ";
         getline(cin, input);
 
@@ -243,11 +266,12 @@ void showMenu() {
             case 1: addRental(); break;
             case 2: displayRentals(); break;
             case 3: bubbleSortAndDisplay(); break;
-            case 4: deleteRental(); break;
-            case 5: cout << "Exiting...\n"; break;
+            case 4: searchRental(); break;
+            case 5: deleteRental(); break;
+            case 6: cout << "Exiting...\n"; break;
             default: cout << "Invalid choice. Please try again.\n";
         }
-    } while (choice != 5);
+    } while (choice != 6);
 }
 
 int main() {
