@@ -33,6 +33,7 @@ private:
     void deleteRental(); // Delete a rental record by renter's name
     void displayGroupInfo(); // Display information about the project group
     void showMenu(); // Main menu interface
+    void searchRental(); // Search for a rental by renter name
 
 public:
     void run(); // Public function to start the program
@@ -255,6 +256,31 @@ void RentalServiceSystem::deleteRental() {
     }
 }
 
+// Search rental by renter name
+void RentalServiceSystem::searchRental() {
+    string name;
+    cout << "\nEnter Renter Name to search: ";
+    getline(cin, name);
+    bool found = false;
+
+    queue<Rental> temp = rentals;
+    while (!temp.empty()) {
+        Rental r = temp.front();
+        temp.pop();
+        if (strcmp(r.renterName, name.c_str()) == 0) {
+            cout << "\nRental found:\nRenter: " << r.renterName << "\nPhone: " << r.phoneModel << " (" << r.modelVariant << ")"
+                 << "\nStart: " << r.startDate << "\nEnd: " << r.endDate
+                 << "\nDays: " << r.days << "\nAmount: " << r.totalAmount << " pesos\n";
+            found = true;
+            break;
+        }
+    }
+
+    if (!found) {
+        cout << "Rental not found.\n";
+    }
+}
+
 // Display group info
 void RentalServiceSystem::displayGroupInfo() {
     cout << "\n===============\n";
@@ -275,7 +301,7 @@ void RentalServiceSystem::showMenu() {
 
         switch (choice) {
             case 1: addRental(); break;
-            case 2: displaySpecificRental(); break;
+            case 2: searchRental(); break;
             case 3: displayAll(); break;
             case 4: displaySpecificRental(); break;
             case 5: deleteRental(); break;
